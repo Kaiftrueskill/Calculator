@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор</title>
+    
+    <style>
+
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #013220;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            height: 100vh;
+            position: relative;
+        }
+
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: white;
+            font-size: 12px;
+            animation: fall linear infinite;
+            user-select: none; 
+            z-index: 1;
+            font-family: Arial, sans-serif;
+        }
+
+        @keyframes fall {
+    0% {
+        transform: translateY(-50px);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh); 
+        opacity: 0.5; 
+    }
+}
+
+        .calculator-container {
+            background-color: #7B001C; 
+            border-radius: 40px; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+            padding: 20px; 
+            width: 275px; 
+            text-align: center;
+            border: 2px solid #ffffff;
+            position: relative; 
+            z-index: 2; 
+        }
+            
+            h1 {
+            margin-bottom: 20px;
+        }
+
+        .calculator-title {
+            font-size: 36px; 
+            font-weight: bold; 
+            color: #ffffff; 
+            margin-bottom: 20px; 
+            text-align: center; 
+        }
+
+        .output {
+            width: 265px;
+            height: 60px;
+            background-color: white;
+            border: 2px solid #ccc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        button {
+            color: #ffffff;
+            width: 50px;
+            height: 50px;
+            font-size: 20px;
+            margin: 5px;
+            border: 2px solid #ffffff;
+            background-color: #FF8243;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #ff3c00;
+        }
+
+        button:active {
+            background-color: #d72439;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+    <h1 class="calculator-title">Калькулятор</h1>
+
+    <div class="output">
+        <p id="display">0</p>
+    </div>
+
+    <div class="buttons">
+        <button>1</button>
+        <button>2</button>
+        <button>3</button>
+        <button>+</button>
+        <button>4</button>
+        <button>5</button>
+        <button>6</button>
+        <button>-</button>
+        <button>7</button>
+        <button>8</button>
+        <button>9</button>
+        <button>*</button>
+        <button>0</button>
+        <button>C</button>
+        <button>=</button>
+        <button>/</button>
+    </div>
+</div>
+    <script>
+        const display = document.getElementById('display');
+        const buttons = document.querySelectorAll('button');
+
+        let firstNumber = null;
+        let operator = null;
+        let waitingForSecondNumber = false;
+
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const value = button.textContent;
+
+                if (!isNaN(value)) {
+                    if (display.textContent === '0' || waitingForSecondNumber) {
+                        display.textContent = value;
+                        waitingForSecondNumber = false;
+                    } else {
+                        display.textContent += value;
+                    }
+                } 
+                
+                else if (['+', '-', '*', '/'].includes(value)) {
+                    firstNumber = parseFloat(display.textContent);
+                    operator = value;
+                    waitingForSecondNumber = true;
+                }
+                
+                else if (value === '=') {
+                    if (firstNumber !== null && operator !== null && !waitingForSecondNumber) {
+                        const secondNumber = parseFloat(display.textContent);
+                        let result;
+
+                        switch (operator) {
+                            case '+':
+                                result = firstNumber + secondNumber;
+                                break;
+                            case '-':
+                                result = firstNumber - secondNumber;
+                                break;
+                            case '*':
+                                result = firstNumber * secondNumber;
+                                break;
+                            case '/':
+                                result = firstNumber / secondNumber;
+                                break;
+                            default:
+                                result = null;
+                        }
+
+                        display.textContent = result;
+                        firstNumber = result;
+                        operator = null;
+                    }
+                }
+
+                else if (value === 'C') {
+                    display.textContent = '0';
+                    firstNumber = null;
+                    operator = null;
+                    waitingForSecondNumber = false;
+                }
+            });
+        });
+
+        function createSnowflake() {
+    const snowflake = document.createElement('div');
+    snowflake.classList.add('snowflake');
+    snowflake.textContent = '❄';
+    snowflake.style.left = Math.random() * window.innerWidth + 'px'; 
+    snowflake.style.fontSize = Math.random() * 50 + 35 + 15 + 10 + 'px';
+    snowflake.style.animationDuration = Math.random() * 7 + 5 + 's';
+    snowflake.style.opacity = Math.random();
+    document.body.appendChild(snowflake);
+
+    console.log('Снежинка добавлена');
+
+    setTimeout(() => {
+        snowflake.remove();
+    }, 7000);
+}
+
+        setInterval(createSnowflake, 200);
+    </script>
+
+</body>
+</html>
